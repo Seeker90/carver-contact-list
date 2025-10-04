@@ -1,0 +1,9 @@
+.card-image{
+    height: 10em;
+    width: 10em;
+}
+.card{
+    margin: 0.5em auto;
+    height: 10em;
+    width: 50em;
+}

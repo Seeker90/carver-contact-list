@@ -1,17 +1,21 @@
 export const initialStore=()=>{
   return{
     message: null,
-    todos: [
-      {
-        id: 1,
-        title: "Make the bed",
-        background: null,
-      },
-      {
-        id: 2,
-        title: "Do my homework",
-        background: null,
-      }
+    contacts: [
+        {
+            "name": "Chris",
+            "phone": "123-456-7890",
+            "email": "apple@gmail.com",
+            "address": "123 apple dr",
+            "id": 16
+        },
+        {
+            "name": "Carver",
+            "phone": "123-456-7890",
+            "email": "apple@gmail.com",
+            "address": "123 apple dr",
+            "id": 17
+        }
     ]
   }
 }
