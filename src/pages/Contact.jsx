@@ -1,3 +1,4 @@
+import { fetchAllContacts } from "../lib/Fetch";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ContactCard } from "../components/ContactCard";
@@ -8,6 +9,9 @@ export const Contact = () => {
     const {store, dispatch} = useGlobalReducer();
 
     //useEffect here
+    useEffect(() => {
+        fetchAllContacts(dispatch)
+    },[])
     return (
         <>
             <div className="container">
