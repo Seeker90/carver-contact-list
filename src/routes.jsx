@@ -8,6 +8,7 @@ import {
 import { Layout } from "./pages/Layout";
 import { Contact } from "./pages/Contact";
 import { AddContact } from "./pages/AddContact";
+import { UpdateContact } from "./pages/EditContact";
 
 
 export const router = createBrowserRouter(
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
         {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
         <Route path= "/" element={<Contact />} />
         <Route path="/add_contact" element={<AddContact />} />
+        <Route path="/update_contact" element={<UpdateContact/>} />
       </Route>
     )
 );

@@ -27,11 +27,24 @@ export default function storeReducer(store, action = {}) {
       }
       case 'updatedContact':
         {
-
+          const updatedContact = action.payload;
+          const updatedContacts = store.contacts.map(contact => 
+            contact.id === updatedContact.id ? updatedContact : contact
+          );
+          return {
+            ...store,
+            contacts: updatedContacts
+          }
         }
       case 'deletedContact':
         {
-          
+          const deletedId = action.payload;
+          const remainingContacts = store.contacts.filter(contact => contact.id !== deletedId);
+
+          return {
+            ...store,
+            contacts: remainingContacts
+          }
         }
     default:
       throw Error('Unknown action.');
