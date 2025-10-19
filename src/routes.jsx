@@ -8,7 +8,7 @@ import {
 import { Layout } from "./pages/Layout";
 import { Contact } from "./pages/Contact";
 import { AddContact } from "./pages/AddContact";
-import { UpdateContact } from "./pages/EditContact";
+import { EditContact } from "./pages/EditContact";
 import { Single } from "./pages/Single";
 
 
@@ -27,7 +27,7 @@ export const router = createBrowserRouter(
         <Route path= "/" element={<Contact />} />
         <Route path="/add_contact" element={<AddContact />} />
         <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
-        <Route path="/update_contact/:id" element={<UpdateContact/>} />
+        <Route path="/update_contact/:id" element={<EditContact/>} />
       </Route>
     )
 );

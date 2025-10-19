@@ -1,112 +1,106 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import { updatedContact } from "../lib/Fetch";
+import { useParams, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { updateContact } from "../lib/Fetch";
 
-export const UpdateContact = () => {
-  const [contactName, setContactName] = useState("");
-  const [contactAddress, setContactAddress] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
+export const EditContact = () => {
   const { id } = useParams();
-  const { store, dispatch } = useGlobalReducer(); 
+  const navigate = useNavigate();
+  const { store, dispatch } = useGlobalReducer();
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    phone: "",
+    email: ""
+  });
 
   useEffect(() => {
-    const existingContact = store.contacts?.find(
-      (contact) => contact.id === parseInt(id)
-    );
-    if (existingContact) {
-      setContactName(existingContact.name || "");
-      setContactAddress(existingContact.address || "");
-      setContactPhone(existingContact.phone || "");
-      setContactEmail(existingContact.email || "");
+    if (store && store.contacts) {
+      const contact = store.contacts.find(c => c.id === parseInt(id));
+      if (contact) {
+        setFormData({
+          name: contact.name,
+          address: contact.address,
+          phone: contact.phone,
+          email: contact.email
+        });
+      }
     }
-  }, [id, store.contacts]);
+  }, [id, store]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
-
-    if (!contactName || !contactAddress || !contactPhone || !contactEmail) {
-      alert("Please fill in all fields before submitting.");
-      return;
-    }
-
-    try {
-      await updatedContact(id, contactName, contactAddress, contactPhone, contactEmail, dispatch);
-      alert("Contact updated successfully!");
-    } catch (error) {
-      console.error("Error updating contact:", error);
-      alert("Failed to update contact. Please try again.");
+    e.preventDefault();
+    const result = await updateContact(
+      id,
+      formData.name,
+      formData.address,
+      formData.phone,
+      formData.email,
+      dispatch);
+    if (result) {
+      navigate("/");
     }
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
-    <>
-      <div className="row header mt-3">
-        <div className="col-12 text-center">
-          <h1>Update a Contact</h1>
+    <div className="container">
+      <h1>Edit Contact</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            className="form-control"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
         </div>
-      </div>
-
-      <div className="row add-contact-row">
-        <div className="col-2"></div>
-        <div className="col-8">
-          <form className="contact-name" onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label htmlFor="contactName" className="form-label">Full Name:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="contactName"
-                value={contactName}
-                onChange={(e) => setContactName(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="contactAddress" className="form-label">Address:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="contactAddress"
-                value={contactAddress}
-                onChange={(e) => setContactAddress(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="contactPhone" className="form-label">Phone Number:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="contactPhone"
-                value={contactPhone}
-                onChange={(e) => setContactPhone(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="contactEmail" className="form-label">Email:</label>
-              <input
-                type="email"
-                className="form-control"
-                id="contactEmail"
-                value={contactEmail}
-                onChange={(e) => setContactEmail(e.target.value)}
-              />
-            </div>
-
-            <button type="submit" className="btn btn-success w-100 py-2">
-              Submit
-            </button>
-          </form>
-
-          <div className="mt-4">
-            <Link to="/">Go Back Home</Link>
-          </div>
+        <div className="form-group">
+          <label>Address</label>
+          <input
+            type="text"
+            name="address"
+            className="form-control"
+            value={formData.address}
+            onChange={handleChange}
+            required
+          />
         </div>
-        <div className="col-2"></div>
-      </div>
-    </>
+        <div className="form-group">
+          <label>Phone</label>
+          <input
+            type="tel"
+            name="phone"
+            className="form-control"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            className="form-control"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">Update Contact</button>
+        <button type="button" className="btn btn-secondary" onClick={() => navigate("/")}>Cancel</button>
+      </form>
+    </div>
   );
 };
