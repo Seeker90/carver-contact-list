@@ -1,15 +1,51 @@
-export const fetchAllContacts = async (dispatch) => {
+export const createAgenda = async (username) => {
   try {
-    const response = await fetch(`https://playground.4geeks.com/contact/agendas/ccarver`);
+    const response = await fetch(`https://playground.4geeks.com/contact/agendas/${username}`, {
+      method: "POST",
+    });
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
     const data = await response.json();
+    console.log("Agenda created:", data);
+    return data;
+  } catch (error) {
+    console.error("Error creating agenda.", error);
+    return null;
+  }
+};
+
+export const fetchAllContacts = async (dispatch) => {
+  console.log("Fetching contacts...");
+  try {
+    const response = await fetch(`https://playground.4geeks.com/contact/agendas/ccarver`);
+    
+    // If agenda doesn't exist (404), create it
+    if (response.status === 404) {
+      console.log("Agenda not found, creating it...");
+      await createAgenda("ccarver");
+      // After creating, fetch again
+      const newResponse = await fetch(`https://playground.4geeks.com/contact/agendas/ccarver`);
+      const newData = await newResponse.json();
+      dispatch({
+        type: 'fetchedContacts',
+        payload: newData.contacts || [],
+      });
+      return newData;
+    }
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log("Data received:", data);
+    
     dispatch({
       type: 'fetchedContacts',
-      payload: data.contacts,
+      payload: data.contacts || [],
     });
     return data;
   } catch (error) {
